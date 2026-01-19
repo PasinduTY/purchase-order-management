@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchaseOrderAPI.Data;
+using PurchaseOrderAPI.DTOs;
 using PurchaseOrderAPI.Enums;
 using PurchaseOrderAPI.Models;
 
@@ -83,9 +84,19 @@ namespace PurchaseOrderAPI.Controllers
 
         // POST: api/PurchaseOrders
         [HttpPost]
-        public async Task<ActionResult<PurchaseOrder>> CreatePurchaseOrder(PurchaseOrder po)
+        public async Task<ActionResult<PurchaseOrder>> CreatePurchaseOrder(CreatePurchaseOrderDto dto)
         {
-            po.Status = PurchaseOrderStatus.Draft; // default
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var po = new PurchaseOrder
+            {
+                SupplierName = dto.SupplierName,
+                OrderDate = dto.OrderDate,
+                TotalAmount = dto.TotalAmount,
+                Status = dto.Status
+            };
+
             _context.PurchaseOrders.Add(po);
             await _context.SaveChangesAsync();
 
@@ -94,24 +105,24 @@ namespace PurchaseOrderAPI.Controllers
 
         // PUT: api/PurchaseOrders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePurchaseOrder(int id, PurchaseOrder po)
+        public async Task<IActionResult> UpdatePurchaseOrder(int id, UpdatePurchaseOrderDto dto)
         {
-            if (id != po.Id)
-                return BadRequest();
+            if (id != dto.Id)
+                return BadRequest("ID mismatch");
 
-            _context.Entry(po).State = EntityState.Modified;
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.PurchaseOrders.Any(e => e.Id == id))
-                    return NotFound();
-                else
-                    throw;
-            }
+            var po = await _context.PurchaseOrders.FindAsync(id);
+            if (po == null)
+                return NotFound();
+
+            po.SupplierName = dto.SupplierName;
+            po.OrderDate = dto.OrderDate;
+            po.TotalAmount = dto.TotalAmount;
+            po.Status = dto.Status;
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
