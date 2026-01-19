@@ -1,26 +1,13 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace PurchaseOrderAPI.DTOs
 {
-    public class CreatePurchaseOrderDto
+    public class PurchaseOrderDto
     {
-        [Required]
-        [StringLength(50)]
+        public int Id { get; set; }
         public string PoNumber { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(500)]
         public string Description { get; set; } = string.Empty;
-
-        [Required]
-        [StringLength(200)]
         public string SupplierName { get; set; } = string.Empty;
-
-        [Required]
         public DateTime OrderDate { get; set; }
-
-        [Required]
-        [Range(0.01, double.MaxValue)]
         public decimal TotalAmount { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }
