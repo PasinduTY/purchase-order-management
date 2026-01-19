@@ -1,0 +1,38 @@
+# ====== Backend (.NET / Visual Studio) ======
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build folders
+bin/
+obj/
+
+# Database files (LocalDB)
+*.mdf
+*.ldf
+
+# Logs, caches
+*.pdb
+*.log
+*.cache
+
+# VS Code settings (optional)
+.vscode/
+
+# Rider IDE
+.idea/
+
+# ====== Frontend (Angular / Node.js) ======
+node_modules/
+dist/
+.angular/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# OS generated files
+Thumbs.db
+.DS_Store
