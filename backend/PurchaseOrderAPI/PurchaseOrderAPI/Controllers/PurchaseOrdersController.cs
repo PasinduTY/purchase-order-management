@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PurchaseOrderAPI.Data;
+using PurchaseOrderAPI.Enums;
 using PurchaseOrderAPI.Models;
 
 namespace PurchaseOrderAPI.Controllers
@@ -38,7 +39,7 @@ namespace PurchaseOrderAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PurchaseOrder>> CreatePurchaseOrder(PurchaseOrder po)
         {
-            //po.Status = PurchaseOrderStatus.Draft; // default
+            po.Status = PurchaseOrderStatus.Draft.ToString(); // default
             _context.PurchaseOrders.Add(po);
             await _context.SaveChangesAsync();
 
