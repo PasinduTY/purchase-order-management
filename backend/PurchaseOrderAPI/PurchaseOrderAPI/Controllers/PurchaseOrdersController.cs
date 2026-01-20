@@ -138,16 +138,23 @@ namespace PurchaseOrderAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePurchaseOrder(int id, UpdatePurchaseOrderDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var po = await _context.PurchaseOrders.FindAsync(id);
             if (po == null)
                 return NotFound();
+
+            // Parse the status string to enum
+            if (!Enum.TryParse<PurchaseOrderStatus>(dto.Status, true, out var status))
+                return BadRequest(new { error = $"Invalid status value: {dto.Status}" });
 
             po.PoNumber = dto.PoNumber;
             po.Description = dto.Description;
             po.SupplierName = dto.SupplierName;
             po.OrderDate = dto.OrderDate;
             po.TotalAmount = dto.TotalAmount;
-            po.Status = dto.Status;
+            po.Status = status;
 
             try
             {

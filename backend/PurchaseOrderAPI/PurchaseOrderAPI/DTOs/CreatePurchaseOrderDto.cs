@@ -5,15 +5,12 @@ namespace PurchaseOrderAPI.DTOs
     public class CreatePurchaseOrderDto
     {
         [Required]
-        [StringLength(50)]
         public string PoNumber { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(500)]
         public string Description { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(200)]
         public string SupplierName { get; set; } = string.Empty;
 
         [Required]

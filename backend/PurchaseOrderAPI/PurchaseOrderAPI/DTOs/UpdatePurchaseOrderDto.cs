@@ -1,20 +1,17 @@
 using System.ComponentModel.DataAnnotations;
-using PurchaseOrderAPI.Enums;
+using System.Text.Json.Serialization;
 
 namespace PurchaseOrderAPI.DTOs
 {
     public class UpdatePurchaseOrderDto
     {
         [Required]
-        [StringLength(50)]
         public string PoNumber { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(500)]
         public string Description { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(200)]
         public string SupplierName { get; set; } = string.Empty;
 
         [Required]
@@ -25,6 +22,6 @@ namespace PurchaseOrderAPI.DTOs
         public decimal TotalAmount { get; set; }
 
         [Required]
-        public PurchaseOrderStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }
