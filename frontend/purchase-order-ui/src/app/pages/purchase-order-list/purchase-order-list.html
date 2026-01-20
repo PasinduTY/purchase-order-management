@@ -1,0 +1,178 @@
+<section>
+  <h2>Purchase Orders</h2>
+
+  <button type="button" (click)="onAddNew()" [disabled]="showForm()" style="margin-bottom: 1rem">
+    + New Purchase Order
+  </button>
+
+  @if (showForm()) {
+    <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px">
+      @if (formError()) {
+        <p style="color: red; margin-bottom: 1rem">{{ formError() }}</p>
+      }
+      <app-purchase-order-form
+        [purchaseOrder]="editingPurchaseOrder()"
+        (submit)="onFormSubmit($event)"
+        (cancel)="onFormCancel()"
+      />
+    </div>
+  }
+
+  @if (deleteConfirm()) {
+    <div
+      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000"
+    >
+      <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 400px">
+        <p style="margin-bottom: 1.5rem">
+          Are you sure you want to delete PO <strong>{{ deleteConfirm()?.poNumber }}</strong
+          >?
+        </p>
+        <div style="display: flex; gap: 1rem">
+          <button
+            type="button"
+            (click)="onDeleteConfirm()"
+            [disabled]="deleteLoading()"
+            style="flex: 1; padding: 0.75rem; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600"
+          >
+            Delete
+          </button>
+          <button
+            type="button"
+            (click)="onDeleteCancel()"
+            [disabled]="deleteLoading()"
+            style="flex: 1; padding: 0.75rem; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <form (submit)="onApplyFilters($event)" aria-label="Filter and sort purchase orders">
+    <label>
+      Supplier
+      <input
+        type="text"
+        [value]="supplier()"
+        (input)="onSupplierChange($event)"
+        placeholder="e.g. ACME"
+      />
+    </label>
+
+    <label>
+      Status
+      <select [value]="status()" (change)="onStatusChange($event)">
+        <option value="">All</option>
+        @for (s of statusOptions; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Start Date
+      <input type="date" [value]="startDate()" (change)="onStartDateChange($event)" />
+    </label>
+
+    <label>
+      End Date
+      <input type="date" [value]="endDate()" (change)="onEndDateChange($event)" />
+    </label>
+
+    <label>
+      Sort by
+      <select [value]="sortBy()" (change)="onSortByChange($event)">
+        <option value="OrderDate">Order date</option>
+        <option value="PoNumber">PO Number</option>
+        <option value="SupplierName">Supplier</option>
+        <option value="TotalAmount">Total amount</option>
+      </select>
+    </label>
+
+    <label>
+      Direction
+      <select [value]="sortDir()" (change)="onSortDirChange($event)">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+      </select>
+    </label>
+
+    <label>
+      Page size
+      <select [value]="pageSize()" (change)="onPageSizeChange($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+    </label>
+
+    <button type="submit">Apply</button>
+  </form>
+</section>
+
+@if (loading()) {
+  <p>Loading...</p>
+} @else if (error()) {
+  <p style="color: red">Error: {{ error() }}</p>
+} @else {
+  <table border="1" cellpadding="6">
+    <thead>
+      <tr>
+        <th>PO Number</th>
+        <th>Description</th>
+        <th>Supplier</th>
+        <th>Order Date</th>
+        <th>Total Amount</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (po of purchaseOrders(); track po.id) {
+        <tr>
+          <td>{{ po.poNumber }}</td>
+          <td>{{ po.description }}</td>
+          <td>{{ po.supplierName }}</td>
+          <td>{{ po.orderDate }}</td>
+          <td>{{ po.totalAmount }}</td>
+          <td>{{ po.status }}</td>
+          <td>
+            <button
+              type="button"
+              (click)="onEdit(po)"
+              [disabled]="showForm() || deleteConfirm() !== null"
+              style="margin-right: 0.5rem; padding: 0.5rem 1rem; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              (click)="onDeleteClick(po)"
+              [disabled]="showForm() || deleteConfirm() !== null"
+              style="padding: 0.5rem 1rem; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="7">No purchase orders found</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div>
+    <button type="button" (click)="onPrevPage()" [disabled]="page() <= 1 || loading()">
+      Previous
+    </button>
+    <span>Page {{ page() }} of {{ totalPages() }} — {{ totalRecords() }} total</span>
+    <button type="button" (click)="onNextPage()" [disabled]="page() >= totalPages() || loading()">
+      Next
+    </button>
+  </div>
+}
+
