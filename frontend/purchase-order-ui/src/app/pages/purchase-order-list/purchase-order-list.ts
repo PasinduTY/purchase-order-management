@@ -1,11 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, signal } from '@angular/core';
 import { PurchaseOrderService } from '../../services/purchase-order';
-import { PurchaseOrder, PurchaseOrderQuery, CreatePurchaseOrderDto, UpdatePurchaseOrderDto } from '../../models/purchase-order.model';
+import {
+  PurchaseOrder,
+  PurchaseOrderQuery,
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto,
+} from '../../models/purchase-order.model';
 import { PurchaseOrderFormComponent } from '../purchase-order-form/purchase-order-form';
 
 @Component({
   selector: 'app-purchase-order-list',
   templateUrl: './purchase-order-list.html',
+  styleUrl: './purchase-order-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [PurchaseOrderFormComponent],

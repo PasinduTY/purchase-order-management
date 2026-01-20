@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PurchaseOrder, CreatePurchaseOrderDto, UpdatePurchaseOrderDto } from '../../models/purchase-order.model';
+import {
+  PurchaseOrder,
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto,
+} from '../../models/purchase-order.model';
 
 @Component({
   selector: 'app-purchase-order-form',
@@ -44,7 +48,7 @@ export class PurchaseOrderFormComponent {
       description: ['', [Validators.required, Validators.minLength(1)]],
       supplierName: ['', [Validators.required, Validators.minLength(1)]],
       orderDate: ['', Validators.required],
-      totalAmount: ['', [Validators.required, Validators.min(0.01)]],
+      totalAmount: [0, [Validators.required, Validators.min(0.01)]],
       status: ['Draft'],
     });
   }
@@ -66,7 +70,7 @@ export class PurchaseOrderFormComponent {
         description: formValue.description,
         supplierName: formValue.supplierName,
         orderDate: formValue.orderDate,
-        totalAmount: formValue.totalAmount,
+        totalAmount: Number(formValue.totalAmount),
         status: formValue.status,
       };
       this.submit.emit(updateDto);
@@ -77,7 +81,7 @@ export class PurchaseOrderFormComponent {
         description: formValue.description,
         supplierName: formValue.supplierName,
         orderDate: formValue.orderDate,
-        totalAmount: formValue.totalAmount,
+        totalAmount: Number(formValue.totalAmount),
       };
       this.submit.emit(createDto);
     }
